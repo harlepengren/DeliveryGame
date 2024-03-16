@@ -14,7 +14,7 @@ public class Order {
     public Vector3 deliveryPosition;
     public Time orderTime;
     public int pizzaCount;
-    public float orderTotal;
+    public int orderTotal;
 }
 
 public class OrderSystem : MonoBehaviour
@@ -40,21 +40,30 @@ public class OrderSystem : MonoBehaviour
 
 
         orderUpdateTime = orderWindow;
-        CreateOrder();
-        GenerateOrders();
+        //CreateOrder();
+        GenerateOrders(true);
     }
 
     public void SetCallback(Action<Order> callback){
         newOrderAction = callback;
     }
 
-    private void GenerateOrders()
+    private void GenerateOrders(bool first = false)
     {
-        int numNextOrders = UnityEngine.Random.Range(0,orderIntensity);
+        int numNextOrders;
 
-        if(numNextOrders > 0){
-            for(int index=0; index<numNextOrders; ++index){
-                nextOrderTime.Add(UnityEngine.Random.Range(0.0f,orderWindow));
+        if(first){
+            // Generate an initial order with 1 second delay.
+            numNextOrders = 1;
+            nextOrderTime.Add(1.0f);
+        }
+        else {
+            numNextOrders = UnityEngine.Random.Range(0,orderIntensity);
+
+            if(numNextOrders > 0){
+                for(int index=0; index<numNextOrders; ++index){
+                    nextOrderTime.Add(UnityEngine.Random.Range(0.0f,orderWindow));
+                }
             }
         }
     }
@@ -90,7 +99,7 @@ public class OrderSystem : MonoBehaviour
         newOrder.customerName = "Test"+UnityEngine.Random.Range(0,1000);
         newOrder.address = "Somewhere";
         newOrder.pizzaCount = UnityEngine.Random.Range(1,10);
-        newOrder.orderTotal = newOrder.pizzaCount * 14.99f;
+        newOrder.orderTotal = newOrder.pizzaCount * 15;
         newOrder.startPosition = startLocation;
         newOrder.deliveryPosition = GetRandomPosition();
         currentOrders.Add(newOrder);
